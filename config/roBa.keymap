@@ -59,6 +59,15 @@
     };
 
     macros {
+        zenhan: zenhan {
+            compatible = "zmk,behavior-macro";
+            #binding-cells = <0>;
+            wait-ms = <40>;
+            tap-ms = <40>;
+            bindings = <&kp LA(GRAVE)>;
+            label = "ZENHAN";
+        };
+
         to_layer_0: to_layer_0 {
             compatible = "zmk,behavior-macro-one-param";
             #binding-cells = <1>;
@@ -74,6 +83,24 @@
         bindings = <&mo>, <&to_layer_0>;
         #binding-cells = <2>;
         tapping-term-ms = <200>;
+    };
+
+    zenhan_semicolon: zenhan_semicolon {
+        compatible = "zmk,behavior-hold-tap";
+        label = "ZENHAN_SEMICOLON";
+        bindings = <&zenhan>, <&kp>;
+        #binding-cells = <2>;
+        flavor = "balanced";
+        tapping-term-ms = <200>;
+        quick-tap-ms = <0>;
+    };
+
+    td_shift_layer_2: tap_dance_shift_layer_2 {
+        compatible = "zmk,behavior-tap-dance";
+        label = "SHIFT_LAYER_2";
+        #binding-cells = <0>;
+        tapping-term-ms = <200>;
+        bindings = <&kp LEFT_SHIFT>, <&mo 2>;
     };
 
     encoder_scroll: encoder_scroll {
@@ -92,8 +119,8 @@
             bindings = <
 &kp Q                       &kp W         &kp E         &kp R                        &kp T                                                          &kp Y        &kp U  &lt 5 I    &kp O    &kp P
 &kp A             &kp S         &kp D         &kp F                        &kp G        &kp LS(LG(S))                      &kp MINUS      &kp H        &kp J  &kp K      &kp L    &kp SQT
-&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                        &kp B        &kp COLON                          &mt LA(GRAVE) SEMICOLON  &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 6 INT_HENKAN  &lt 2 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE  &lt 1 ENTER                             &kp DEL
+&mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                        &kp B        &kp COLON                          &zenhan_semicolon 0 SEMICOLON  &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &td_shift_layer_2            &lt 2 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE  &lt 1 ENTER                             &kp DEL
             >;
 
             sensor-bindings = <&encoder_scroll>;
