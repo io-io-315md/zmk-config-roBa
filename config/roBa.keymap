@@ -112,7 +112,7 @@
 &kp Q                       &kp W         &kp E         &kp R                        &kp T                                                          &kp Y        &kp U  &lt 5 I    &kp O    &kp P
 &kp A             &kp S         &kp D         &kp F                        &kp G        &kp LS(LG(S))                      &kp MINUS      &kp H        &kp J  &kp K      &kp L    &kp SQT
 &mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                        &kp B        &kp COLON                          &zenhan_semicolon 0 SEMICOLON  &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 1 LEFT_SHIFT  &lt 2 TAB    &lt_to_layer_0 3 INT_MUHENKAN      &kp DEL        &mt LEFT_SHIFT ENTER                  &kp DEL
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &lt_to_layer_0 1 LEFT_SHIFT  &lt 2 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE  &mt LEFT_SHIFT ENTER                  &kp DEL
             >;
 
             sensor-bindings = <&encoder_scroll>;
