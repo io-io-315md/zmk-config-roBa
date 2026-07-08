@@ -95,6 +95,14 @@
         quick-tap-ms = <0>;
     };
 
+    td_backspace_shift: tap_dance_backspace_shift {
+        compatible = "zmk,behavior-tap-dance";
+        label = "BACKSPACE_SHIFT_REPEAT";
+        #binding-cells = <0>;
+        tapping-term-ms = <200>;
+        bindings = <&mt LEFT_SHIFT BACKSPACE>, <&kp BACKSPACE>;
+    };
+
     encoder_scroll: encoder_scroll {
     compatible = "zmk,behavior-sensor-rotate";
     label = "ENCODER_SCROLL";
@@ -112,7 +120,7 @@
 &kp Q                       &kp W         &kp E         &kp R                        &kp T                                                          &kp Y        &kp U  &lt 5 I    &kp O    &kp P
 &kp A             &kp S         &kp D         &kp F                        &kp G        &kp LS(LG(S))                      &kp MINUS      &kp H        &kp J  &kp K      &kp L    &kp SQT
 &mt LEFT_SHIFT Z  &kp X         &kp C         &kp V                        &kp B        &kp COLON                          &kp SEMICOLON  &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &zenhan_layer 1 0            &lt 2 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &kp BACKSPACE  &mt LEFT_SHIFT ENTER                  &kp DEL
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &zenhan_layer 1 0            &lt 2 SPACE  &lt_to_layer_0 3 INT_MUHENKAN      &td_backspace_shift  &kp ENTER                  &kp DEL
             >;
 
             sensor-bindings = <&encoder_scroll>;
