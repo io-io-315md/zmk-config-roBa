@@ -184,7 +184,7 @@ ARROW {
 
 &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
 
-&trans &trans &trans &trans &trans &trans &trans &mkp MB4 &trans
+&trans &trans &trans &trans &trans &trans &trans &trans &trans
     >;
 MOUSE {
     bindings = <
@@ -225,6 +225,17 @@ layer_6 {
 
     sensor-bindings = <&encoder_scroll>;
 };
+        };
+
+        MOUSE_BACK {
+            bindings = <
+&trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &mkp MB4                        &trans
+            >;
+
+            sensor-bindings = <&encoder_scroll>;
         };
     };
 };
