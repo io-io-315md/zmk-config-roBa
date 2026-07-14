@@ -1,6 +1,7 @@
 #include <behaviors.dtsi>
 #include <dt-bindings/zmk/bt.h>
 #include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/modifiers.h>
 
 #define ZMK_POINTING_DEFAULT_SCRL_VAL 80
 #include <dt-bindings/zmk/pointing.h>
@@ -103,6 +104,14 @@
         bindings = <&mt LEFT_SHIFT BACKSPACE>, <&kp BACKSPACE>;
     };
 
+    del_esc: delete_escape {
+        compatible = "zmk,behavior-mod-morph";
+        label = "DELETE_ESCAPE";
+        #binding-cells = <0>;
+        bindings = <&kp DEL>, <&kp ESCAPE>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
     encoder_scroll: encoder_scroll {
     compatible = "zmk,behavior-sensor-rotate";
     label = "ENCODER_SCROLL";
@@ -120,7 +129,7 @@
 &kp Q                       &kp W         &kp E         &kp R                        &kp T                                                          &kp Y        &kp U  &kp I      &kp O    &kp P
 &kp A             &kp S         &kp D         &kp F                        &kp G        &kp LS(LG(S))                      &kp MINUS      &kp H        &kp J  &kp K      &kp L    &kp SQT
 &kp Z             &kp X         &kp C         &kp V                        &kp B        &kp COLON                          &kp SEMICOLON  &kp N        &kp M  &kp COMMA  &kp DOT  &kp SLASH
-&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &zenhan_layer 1 0            &lt 2 TAB    &kp SPACE                           &td_backspace_shift  &kp ENTER                  &kp DEL
+&kp LCTRL         &kp LEFT_WIN  &kp LEFT_ALT  &zenhan_layer 1 0            &lt 2 TAB    &kp SPACE                           &td_backspace_shift  &kp ENTER                  &del_esc
             >;
 
             sensor-bindings = <&encoder_scroll>;
@@ -144,8 +153,8 @@ FUNCTION {
 
         NUM {
             bindings = <
-&kp MINUS       &mt HOME KP_NUMBER_7  &mt UP_ARROW KP_NUMBER_8  &mt PAGE_UP KP_NUMBER_9  &kp EQUAL                                                   &kp NUMBER_6  &kp NUMBER_7      &kp GRAVE       &kp NUMBER_9  &kp NUMBER_0
-&kp SLASH       &mt LEFT_ARROW KP_NUMBER_4  &kp KP_NUMBER_5  &mt RIGHT_ARROW KP_NUMBER_6  &kp KP_NUMBER_8  &mt INSERT KP_NUMBER_0      &kp MINUS     &kp NUMBER_1      &kp NUMBER_2     &kp NUMBER_3  &kp NUMBER_4      &kp NUMBER_5
+&kp MINUS       &mt HOME KP_NUMBER_7  &kp UP_ARROW  &mt PAGE_UP KP_NUMBER_9  &kp EQUAL                                                   &kp NUMBER_6  &kp NUMBER_7      &kp GRAVE       &kp NUMBER_9  &kp NUMBER_0
+&kp SLASH       &kp LEFT_ARROW  &kp DOWN_ARROW  &kp RIGHT_ARROW  &kp KP_NUMBER_8  &mt INSERT KP_NUMBER_0      &kp MINUS     &kp NUMBER_1      &kp NUMBER_2     &kp NUMBER_3  &kp NUMBER_4      &kp NUMBER_5
 &kp LEFT_SHIFT  &mt END KP_NUMBER_1   &mt DOWN_ARROW KP_NUMBER_2  &mt PAGE_DOWN KP_NUMBER_3  &kp PERIOD    &kp EQUAL                    &trans        &kp LEFT_BRACE    &kp RIGHT_BRACE   &kp LEFT_BRACE  &kp RIGHT_BRACE   &kp BACKSLASH
 &trans          &trans                &trans                       &trans                     &trans        &trans                       &trans        &trans                                                                 &kp BACKSLASH
             >;
