@@ -1,8 +1,8 @@
 diff --git a/Kconfig b/Kconfig
-index 8ec6c60..b2b2479 100644
+index e130d53..cdc26ad 100644
 --- a/Kconfig
 +++ b/Kconfig
-@@ -167,6 +167,19 @@ config PMW3610_MOVEMENT_THRESHOLD
+@@ -167,6 +167,37 @@ config PMW3610_MOVEMENT_THRESHOLD
          A higher value means more movement is required to activate the mouse layer.
          This helps prevent accidental activation during typing.
  
@@ -19,36 +19,114 @@ index 8ec6c60..b2b2479 100644
 +    help
 +        Trackball movement required to activate PMW3610_BACK_LAYER.
 +
++config PMW3610_AUTOMOUSE_KEEP_POSITION_0
++    int "First key position that keeps automatic mouse layer active"
++    default -1
++    help
++        Key position that should continue to use the mouse layer after automatic activation.
++
++config PMW3610_AUTOMOUSE_KEEP_POSITION_1
++    int "Second key position that keeps automatic mouse layer active"
++    default -1
++    help
++        Key position that should continue to use the mouse layer after automatic activation.
++
++config PMW3610_AUTOMOUSE_KEEP_POSITION_2
++    int "Third key position that keeps automatic mouse layer active"
++    default -1
++    help
++        Key position that should continue to use the mouse layer after automatic activation.
++
  config PMW3610_BALL_ACTION_TICK
      int "PMW3610's required ticks to trigger a ball action"
      default 20
 diff --git a/src/pmw3610.c b/src/pmw3610.c
-index 3ae949f..a2f6d2a 100644
+index e5b86eb..7d83e57 100644
 --- a/src/pmw3610.c
 +++ b/src/pmw3610.c
-@@ -571,6 +571,21 @@ static void deactivate_automouse_layer(struct k_timer *timer) {
- K_TIMER_DEFINE(automouse_layer_timer, deactivate_automouse_layer, NULL);
- #endif
+@@ -554,21 +554,77 @@ static void pmw3610_async_init(struct k_work *work) {
  
-+#if CONFIG_PMW3610_BACK_LAYER >= 0
-+struct k_timer automouse_back_layer_timer;
-+
-+static void activate_automouse_back_layer() {
-+    zmk_keymap_layer_activate(CONFIG_PMW3610_BACK_LAYER);
-+    k_timer_start(&automouse_back_layer_timer, K_MSEC(CONFIG_PMW3610_AUTOMOUSE_TIMEOUT_MS), K_NO_WAIT);
-+}
-+
-+static void deactivate_automouse_back_layer(struct k_timer *timer) {
-+    zmk_keymap_layer_deactivate(CONFIG_PMW3610_BACK_LAYER);
-+}
-+
-+K_TIMER_DEFINE(automouse_back_layer_timer, deactivate_automouse_back_layer, NULL);
+ #define AUTOMOUSE_LAYER (DT_PROP(DT_DRV_INST(0), automouse_layer))
+ #if AUTOMOUSE_LAYER > 0
+-struct k_timer automouse_layer_timer;
+ static bool automouse_triggered = false;
+ 
+ static void activate_automouse_layer() {
+     automouse_triggered = true;
+     zmk_keymap_layer_activate(AUTOMOUSE_LAYER);
+-    k_timer_start(&automouse_layer_timer, K_MSEC(CONFIG_PMW3610_AUTOMOUSE_TIMEOUT_MS), K_NO_WAIT);
+ }
+ 
+-static void deactivate_automouse_layer(struct k_timer *timer) {
++static void deactivate_automouse_layer() {
+     automouse_triggered = false;
+     zmk_keymap_layer_deactivate(AUTOMOUSE_LAYER);
+ }
 +#endif
 +
++#if CONFIG_PMW3610_BACK_LAYER >= 0
++static bool automouse_back_layer_triggered = false;
++
++static void activate_automouse_back_layer() {
++    automouse_back_layer_triggered = true;
++    zmk_keymap_layer_activate(CONFIG_PMW3610_BACK_LAYER);
++}
++
++static void deactivate_automouse_back_layer() {
++    automouse_back_layer_triggered = false;
++    zmk_keymap_layer_deactivate(CONFIG_PMW3610_BACK_LAYER);
++}
++#endif
++
++#if AUTOMOUSE_LAYER > 0
++static bool automouse_keep_position(uint32_t position) {
++    int32_t signed_position = (int32_t)position;
++
++    return (CONFIG_PMW3610_AUTOMOUSE_KEEP_POSITION_0 >= 0 &&
++            signed_position == CONFIG_PMW3610_AUTOMOUSE_KEEP_POSITION_0) ||
++           (CONFIG_PMW3610_AUTOMOUSE_KEEP_POSITION_1 >= 0 &&
++            signed_position == CONFIG_PMW3610_AUTOMOUSE_KEEP_POSITION_1) ||
++           (CONFIG_PMW3610_AUTOMOUSE_KEEP_POSITION_2 >= 0 &&
++            signed_position == CONFIG_PMW3610_AUTOMOUSE_KEEP_POSITION_2);
++}
++
++static bool automouse_layer_active() {
++    return automouse_triggered || zmk_keymap_layer_active(AUTOMOUSE_LAYER)
++#if CONFIG_PMW3610_BACK_LAYER >= 0
++           || automouse_back_layer_triggered || zmk_keymap_layer_active(CONFIG_PMW3610_BACK_LAYER)
++#endif
++        ;
++}
+ 
+-K_TIMER_DEFINE(automouse_layer_timer, deactivate_automouse_layer, NULL);
++static void deactivate_automouse_layers() {
++#if CONFIG_PMW3610_BACK_LAYER >= 0
++    deactivate_automouse_back_layer();
++#endif
++    deactivate_automouse_layer();
++}
++
++static int automouse_position_state_listener(const zmk_event_t *eh) {
++    const struct zmk_position_state_changed *ev = as_zmk_position_state_changed(eh);
++
++    if (ev == NULL || !ev->state || !automouse_layer_active()) {
++        return ZMK_EV_EVENT_BUBBLE;
++    }
++
++    if (automouse_keep_position(ev->position)) {
++        return ZMK_EV_EVENT_BUBBLE;
++    }
++
++    deactivate_automouse_layers();
++    return ZMK_EV_EVENT_BUBBLE;
++}
++
++ZMK_LISTENER(pmw3610_automouse, automouse_position_state_listener);
++ZMK_SUBSCRIPTION(pmw3610_automouse, zmk_position_state_changed);
+ #endif
+ 
  int ball_action_idx = -1;
- static enum pixart_input_mode get_input_mode_for_current_layer(const struct device *dev) {
-     const struct pixart_config *config = dev->config;
-@@ -725,6 +740,12 @@ static int pmw3610_report_data(const struct device *dev) {
+@@ -726,6 +782,12 @@ static int pmw3610_report_data(const struct device *dev) {
                  movement_size > CONFIG_PMW3610_MOVEMENT_THRESHOLD) {
                  activate_automouse_layer();
              }
