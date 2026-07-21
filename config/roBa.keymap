@@ -193,7 +193,7 @@ ARROW {
 
 &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
 
-&trans &trans &trans &trans &trans &trans &trans &none &trans
+&trans &trans &trans &trans &trans &trans &trans &trans &trans
     >;
 MOUSE {
     bindings = <
