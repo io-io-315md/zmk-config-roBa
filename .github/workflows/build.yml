@@ -95,6 +95,8 @@ jobs:
       - name: Patch PMW3610 driver
         working-directory: ${{ env.base_dir }}/modules/zmk-pmw3610-driver
         run: |
+          git reset --hard HEAD
+          git clean -fd
           patch_file="${GITHUB_WORKSPACE}/patches/pmw3610-enter-back-layer.patch"
           if git apply --check "${patch_file}"; then
             git apply "${patch_file}"
