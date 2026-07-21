@@ -96,12 +96,22 @@
         quick-tap-ms = <0>;
     };
 
+    backspace_shift: backspace_shift {
+        compatible = "zmk,behavior-hold-tap";
+        label = "BACKSPACE_SHIFT";
+        bindings = <&kp>, <&kp>;
+        #binding-cells = <2>;
+        flavor = "balanced";
+        tapping-term-ms = <100>;
+        quick-tap-ms = <0>;
+    };
+
     td_backspace_shift: tap_dance_backspace_shift {
         compatible = "zmk,behavior-tap-dance";
         label = "BACKSPACE_SHIFT_REPEAT";
         #binding-cells = <0>;
-        tapping-term-ms = <200>;
-        bindings = <&mt LEFT_SHIFT BACKSPACE>, <&kp BACKSPACE>;
+        tapping-term-ms = <100>;
+        bindings = <&backspace_shift LEFT_SHIFT BACKSPACE>, <&kp BACKSPACE>;
     };
 
     del_esc: delete_escape {
