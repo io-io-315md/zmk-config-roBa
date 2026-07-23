@@ -122,6 +122,14 @@
         mods = <(MOD_LSFT|MOD_RSFT)>;
     };
 
+    mouse_exit_del_esc: mouse_exit_delete_escape {
+        compatible = "zmk,behavior-mod-morph";
+        label = "MOUSE_EXIT_DELETE_ESCAPE";
+        #binding-cells = <0>;
+        bindings = <&to_layer_0 DEL>, <&to_layer_0 ESCAPE>;
+        mods = <(MOD_LSFT|MOD_RSFT)>;
+    };
+
     encoder_scroll: encoder_scroll {
     compatible = "zmk,behavior-sensor-rotate";
     label = "ENCODER_SCROLL";
@@ -203,7 +211,7 @@ ARROW {
 
 &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
 
-&trans &trans &trans &trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &trans &trans &trans &mouse_exit_del_esc
     >;
 MOUSE {
     bindings = <
@@ -251,7 +259,7 @@ layer_6 {
 &trans  &trans  &trans  &trans  &trans                      &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
 &trans  &trans  &trans  &trans  &trans  &trans      &trans  &trans  &trans  &trans  &trans  &trans
-&trans  &trans  &trans  &trans  &trans  &trans      &trans  &mkp MB4                        &trans
+&trans  &trans  &trans  &trans  &trans  &trans      &trans  &mkp MB4                        &mouse_exit_del_esc
             >;
 
             sensor-bindings = <&encoder_scroll>;
